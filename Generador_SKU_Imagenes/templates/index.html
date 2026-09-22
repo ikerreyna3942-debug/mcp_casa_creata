@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Creata</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <main class="dashboard-grid">
+            <!-- 1. Elegir los productos -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>1. Elegir los productos</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar producto..." autocomplete="off">
+                        <div id="searchResults" class="search-dropdown" style="display: none;"></div>
+                    </div>
+
+                    <div class="selected-section">
+                        <span class="section-label">Seleccionados (<span id="selectedCount">0</span>)</span>
+                        <div id="selectedList" class="selected-list">
+                            <p class="empty-tip">Sin productos seleccionados</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Subir las fotos -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>2. Subir las fotos</h2>
+                </div>
+                <div class="panel-body panel-upload-body">
+                    <div id="dropZone" class="drop-zone" onclick="document.getElementById('multiFileInput').click()">
+                        <input type="file" id="multiFileInput" multiple style="display: none;">
+                        <div class="empty-state">
+                            <div class="upload-icon">📂</div>
+                            <span class="upload-label">Subir fotos o documentos</span>
+                        </div>
+                    </div>
+
+                    <div class="files-preview-section">
+                        <span class="section-label">Archivos Adjuntos (<span id="filesCount">0</span>)</span>
+                        <div id="filesContainer" class="files-grid">
+                            <p class="empty-tip-files">No hay archivos adjuntos</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Panel de confirmación -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2>3. Panel de confirmación</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="confirmation-summary">
+                        <div class="summary-item">
+                            <span class="label">Productos:</span>
+                            <span class="value" id="summaryCount">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Archivos:</span>
+                            <span class="value" id="summaryFilesCount">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Estado:</span>
+                            <span class="value" id="summaryStatus">Listo</span>
+                        </div>
+                    </div>
+
+                    <!-- Miniatura de resultado en el panel -->
+                    <div id="resultThumbWrapper" class="result-thumb-wrapper" style="display: none;">
+                        <span class="section-label">Render Generado</span>
+                        <div class="result-thumb-card">
+                            <img id="resultThumbImg" src="" alt="Miniatura Generada">
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <input type="text" id="approvalNotes" class="form-control" placeholder="Observaciones">
+                    </div>
+
+                    <button id="btnConfirm" class="btn btn-success btn-block mt-auto" disabled>
+                        Confirmar
+                    </button>
+
+                    <div id="confirmationNotice" class="confirmation-notice" style="display: none;"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 1. Botón Flotante MOSTRAR FOTO -->
+    <button id="btnMostrarFoto" class="btn-flotante-foto" style="display: none;">
+        <span class="btn-icon">✨</span> MOSTRAR FOTO
+    </button>
+
+    <!-- 2. Modal Lightbox de Foto en Grande -->
+    <div id="imageLightboxModal" class="lightbox-modal" style="display: none;">
+        <div class="lightbox-content-wrapper">
+            <button id="btnCloseLightbox" class="lightbox-close-btn" title="Cerrar (Esc)">✕</button>
+            <img id="lightboxImg" class="lightbox-img" src="" alt="Renderizado ampliado">
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

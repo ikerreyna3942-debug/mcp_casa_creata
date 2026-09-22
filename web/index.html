@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Creata - Selección de Productos</title>
+    
+    <!-- Tailwind CSS (CDN para desarrollo sin Node.js) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js (CDN para interactividad reactiva ligera) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        /* Estilos adicionales ligeros para la zona de drag & drop */
+        .drag-active {
+            border-color: #3b82f6 !important;
+            background-color: #eff6ff !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800 p-6">
+
+    <div class="max-w-6xl mx-auto" x-data="appData()">
+        
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Configurador de Pedidos</h1>
+            <p class="text-gray-500 mt-2">Selecciona productos y adjunta sus referencias visuales</p>
+        </header>
+
+        <!-- Grid Principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Panel 1: Elegir Productos -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
+                    <h2 class="text-xl font-semibold">Elegir Productos</h2>
+                </div>
+                <p class="text-sm text-gray-500 mb-4">Ingresa el SKU o nombre del producto para agregarlo a la lista.</p>
+                
+                <form @submit.prevent="addProduct" class="flex gap-2 mb-4">
+                    <input 
+                        type="text" 
+                        x-model="newProduct" 
+                        placeholder="Ej. SKU-1024 o 'Silla Eames'" 
+                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    >
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        Agregar
+                    </button>
+                </form>
+
+                <div class="flex-1 overflow-y-auto">
+                    <ul class="space-y-2">
+                        <template x-for="(prod, index) in products" :key="index">
+                            <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <span class="font-medium text-gray-700" x-text="prod"></span>
+                                <button @click="removeProduct(index)" class="text-red-500 hover:text-red-700 p-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </li>
+                        </template>
+                        <li x-show="products.length === 0" class="text-center text-gray-400 py-4 text-sm italic">
+                            No hay productos seleccionados.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Panel 2: Subir Fotos -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
+                    <h2 class="text-xl font-semibold">Subir Fotos</h2>
+                </div>
+                <p class="text-sm text-gray-500 mb-4">Adjunta imágenes de referencia para el pedido.</p>
+
+                <div 
+                    class="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center text-center transition-colors cursor-pointer flex-1"
+                    :class="{ 'drag-active': isDragging }"
+                    @dragover.prevent="isDragging = true"
+                    @dragleave.prevent="isDragging = false"
+                    @drop.prevent="handleDrop($event)"
+                    @click="$refs.fileInput.click()"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p class="text-gray-600 font-medium">Arrastra tus fotos aquí</p>
+                    <p class="text-gray-400 text-sm mt-1">o haz clic para explorar</p>
+                    <input type="file" x-ref="fileInput" @change="handleFileSelect" multiple accept="image/*" class="hidden">
+                </div>
+
+                <!-- Preview de fotos miniatura -->
+                <div class="mt-4 flex gap-2 overflow-x-auto pb-2" x-show="photos.length > 0">
+                    <template x-for="(photo, index) in photos" :key="index">
+                        <div class="relative flex-shrink-0">
+                            <img :src="photo.url" class="w-16 h-16 object-cover rounded-lg border border-gray-200">
+                            <button @click.stop="removePhoto(index)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Panel 3: Confirmación -->
+            <div class="bg-gray-900 rounded-xl shadow-lg p-6 flex flex-col h-full text-white">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</div>
+                    <h2 class="text-xl font-semibold">Resumen</h2>
+                </div>
+                
+                <div class="flex-1 space-y-6 overflow-y-auto">
+                    <!-- Resumen Productos -->
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Productos (<span x-text="products.length"></span>)</h3>
+                        <ul class="space-y-1">
+                            <template x-for="prod in products">
+                                <li class="text-gray-100 flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                                    <span x-text="prod"></span>
+                                </li>
+                            </template>
+                            <li x-show="products.length === 0" class="text-gray-500 text-sm italic">Sin productos.</li>
+                        </ul>
+                    </div>
+
+                    <hr class="border-gray-700">
+
+                    <!-- Resumen Fotos -->
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Archivos Adjuntos (<span x-text="photos.length"></span>)</h3>
+                        <div class="grid grid-cols-3 gap-2" x-show="photos.length > 0">
+                            <template x-for="photo in photos">
+                                <div class="aspect-square rounded-md overflow-hidden border border-gray-700">
+                                    <img :src="photo.url" class="w-full h-full object-cover">
+                                </div>
+                            </template>
+                        </div>
+                        <p x-show="photos.length === 0" class="text-gray-500 text-sm italic">Sin imágenes.</p>
+                    </div>
+                </div>
+
+                <!-- Botón de Acción -->
+                <div class="mt-6 pt-6 border-t border-gray-700">
+                    <button 
+                        class="w-full py-3 rounded-lg font-medium transition-colors flex justify-center items-center gap-2"
+                        :class="isValid() ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer' : 'bg-gray-700 text-gray-400 cursor-not-allowed'"
+                        :disabled="!isValid()"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span x-text="isValid() ? 'Confirmar y Enviar' : 'Completa los pasos'"></span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script de Alpine.js para la lógica de la UI -->
+    <script>
+        function appData() {
+            return {
+                newProduct: '',
+                products: [],
+                photos: [],
+                isDragging: false,
+
+                addProduct() {
+                    if (this.newProduct.trim() !== '') {
+                        this.products.push(this.newProduct.trim());
+                        this.newProduct = '';
+                    }
+                },
+
+                removeProduct(index) {
+                    this.products.splice(index, 1);
+                },
+
+                handleDrop(event) {
+                    this.isDragging = false;
+                    const files = event.dataTransfer.files;
+                    this.processFiles(files);
+                },
+
+                handleFileSelect(event) {
+                    const files = event.target.files;
+                    this.processFiles(files);
+                },
+
+                processFiles(files) {
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        if (file.type.startsWith('image/')) {
+                            const url = URL.createObjectURL(file);
+                            this.photos.push({ file, url });
+                        }
+                    }
+                },
+
+                removePhoto(index) {
+                    URL.revokeObjectURL(this.photos[index].url);
+                    this.photos.splice(index, 1);
+                },
+
+                isValid() {
+                    // Criterio básico: Al menos 1 producto y 1 foto
+                    return this.products.length > 0 && this.photos.length > 0;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

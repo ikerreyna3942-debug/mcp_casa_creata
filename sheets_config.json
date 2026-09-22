@@ -1,0 +1,11 @@
+{
+  "spreadsheet_id": "COLOCA_AQUI_TU_ID_DEL_DOCUMENTO",
+  "spreadsheet_title": "TITULO_DEL_DOCUMENTO",
+  "credentials_file": "credentials.json",
+  "sheets": {
+    "HOJA_EJEMPLO": {
+      "name": "Nombre de la pestaña",
+      "gid": "0"
+    }
+  }
+}

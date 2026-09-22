@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "antigravity-integracion",
+  "private_key_id": "d02e2152f7efc587372400f2e06cfb632a54f406",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5OTsD4nMFkLca\nVrS1GI9Nbphk+mT4raIXxouA6c9ZK2XmoU4B9A8TvlMb/H7q8kVU1zYDl9bUnA9B\nAVX6nZXP8xDl2dQykP3UeXQAh9zEdRhvuwZDr6lzEiFiFdeG8gGal+FShNypeHzo\nJgjdaWVR0miH9Nn94SoDvFpUY0VkDc/FmYPtBIWaneXJ6U6CTJS4EY5j3cuUyek7\n/1sEX8pCxJeOPUBhEznN51ghMJYxJ6QIhbXKton4kpO53vXX3w0N+isxUuMhjYTQ\npr0aPgSmO2WcVPjcZvRvGGTG6LVjqbNrkOU5YUWDPwQ80RE7mCZnNa1T6FjloAuc\nauS9w1fZAgMBAAECggEAIjhcmt8feQu/iHI0eLDM6PVh2mYYeYk6xUG9TFfmIwdN\nkEqE6v94OaGUITuJB0czX/VS2V8YJbefadchV2f94al6mbyg46a9/p9huydetj0c\nAqh/A8pUeBoFaOW4KApWGYWt71z0l6rXCNzeDmoGehNxlIy8KZeL95y445Zjn5RN\nNGOKWC3e8pLF6GnxKrw3rgtIpO540brGaR8nLtLO2uK640OVQ9bgo6Rs4oLhLvNY\naaOn39fYdlSKl/Wm275E39k8Xp/V+JiY3zUpbej+IBdEWjyHJIfQ2yn/eMYdiAwq\nJ53owkV8Dv3GVy70WQTFdUYUGmFa8f+eL9DziFqYwQKBgQDZ+B9V7A/TS4SR51XK\nlOwzdElfMZ5xQdhNUZrW1GQi0TuL4AhsvgLEmfxNP4MKe8bIJzTbuhQlFnrPFu1O\nzIFlGklNIAca+zxApcuSipVTbse1fPimzRHwXi5raZXCqgOs6Kd5RmWGksLgflYH\nraJY2j5zL3q4hvFcITwdVLRSxQKBgQDZinr3tt22GvdRybcWOQoQtEjuUyosOleD\n+92zrNqiq/DyhTifC5etunMxTMBTxIFuwt5PH5wLccJ/9AsiPJAh8d7JGLvpdkS3\n82sYOoczb1MeScwYh0cIO08REhsU7mK+deLm1CbUEodcDINrfVxAhoxMfBlHqtPk\nsGWYcfpyBQKBgGz4OtI93fuIeZJn0OAia6Ods0DAEbIVdQnSjlJwhE9Twy0+p3eV\n1tRrF1OXOO/4yXwu/aIL+R5BiswVbjZCzz24UoUYSfUXPRwkxw1P8y9u5rC49aaO\nRzWgIBzbAF/9lzDOb0uWAhOxM3QANQpJqCw7j5UOW4/9BpVEmEUhn7TxAoGBAJn1\nZd3W78aoAw1BQ3BY4gS8czkoZppyl+ly4Y798KZcJeSd4Fq/a5Oqd0gW167xTeFD\nzO4Wout+kXbZEuAiGKfNdCzCcotiBnRhtBOrqHAAg8TV2boqU11CDE06kSwZIo1F\nBVb0Ip7Ilj/RI1l5mUaZcsXWtlWAUwJwzRY85FC5AoGATPWG+MlTiAKijBna9GeO\nm1pQshrKkAwjEwmOFiKCxyxenLMAY1QWXImTlV7z3EsJo5eLh61pyM2CckqkHKOe\n5lhilQn4NyWvYbbdXCR57e5FoMAzAWxpsvHSYZkbavxVFfdvTvBTonYXdLRGblpK\nhLaMs2DgwtwrKZL/Yqfo6eQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "casa-creata@antigravity-integracion.iam.gserviceaccount.com",
+  "client_id": "110733442428052438641",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/casa-creata%40antigravity-integracion.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
