@@ -1,4 +1,4 @@
-﻿let productosCatalogo = [];
+let productosCatalogo = [];
 let productosSeleccionados = [];
 let archivosAdjuntos = [];
 let imagenGeneradaBase64 = null;
@@ -134,8 +134,77 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnConfirm.disabled = false;
     }
 
+    // Nuevo: Lógica para adjuntar fotos de muebles manuales
+    const multiMuebleInput = document.getElementById('multiMuebleInput');
+    const dropZoneMuebles = document.getElementById('dropZoneMuebles');
+
+    if (dropZoneMuebles) {
+        dropZoneMuebles.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZoneMuebles.style.borderColor = '#3b82f6';
+        });
+        dropZoneMuebles.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZoneMuebles.style.borderColor = 'rgba(255,255,255,0.1)';
+        });
+        dropZoneMuebles.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZoneMuebles.style.borderColor = 'rgba(255,255,255,0.1)';
+            handleMueblesFiles(Array.from(e.dataTransfer.files));
+        });
+    }
+
+    if (multiMuebleInput) {
+        multiMuebleInput.addEventListener('change', (e) => {
+            handleMueblesFiles(Array.from(e.target.files));
+            multiMuebleInput.value = '';
+        });
+    }
+
+    function handleMueblesFiles(files) {
+        files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    productosSeleccionados.push({
+                        id: 'CUSTOM-' + Date.now() + Math.random().toString().substring(2, 6),
+                        nombre: file.name.split('.')[0] || 'Mueble Subido',
+                        sku: 'CUSTOM',
+                        cantidad: 1,
+                        foto_url: evt.target.result, // Para mostrar la miniatura en UI
+                        foto_b64: evt.target.result  // Para enviar al backend
+                    });
+                    actualizarSeleccionados();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    const dropZone = document.getElementById('dropZone');
+    
+    if (dropZone) {
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#3b82f6';
+        });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'rgba(255,255,255,0.1)';
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'rgba(255,255,255,0.1)';
+            handleEnvFiles(Array.from(e.dataTransfer.files));
+        });
+    }
+
     multiFileInput.addEventListener('change', (e) => {
-        const files = Array.from(e.target.files);
+        handleEnvFiles(Array.from(e.target.files));
+        multiFileInput.value = '';
+    });
+
+    function handleEnvFiles(files) {
         files.forEach(file => {
             const isImage = file.type.startsWith('image/');
             const item = {
@@ -149,6 +218,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const reader = new FileReader();
                 reader.onload = (evt) => {
                     item.previewUrl = evt.target.result;
+                    // También guardamos el base64 crudo en el archivo por si el backend lo requiere (actualmente usa Form multipart, pero por si acaso)
+                    item.base64 = evt.target.result; 
                     renderArchivos();
                 };
                 reader.readAsDataURL(file);
@@ -156,8 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             archivosAdjuntos.push(item);
         });
         renderArchivos();
-        multiFileInput.value = '';
-    });
+    }
 
     function renderArchivos() {
         filesCount.textContent = archivosAdjuntos.length;
@@ -229,6 +299,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const detalleProductos = productosSeleccionados.map(p => `${p.cantidad}x ${p.nombre} (${p.sku})`).join(', ') || 'Sin producto';
             const skus = productosSeleccionados.map(p => p.sku).join(', ') || 'N/A';
             const nombresArchivos = archivosAdjuntos.map(a => a.name);
+            const base64Archivos = archivosAdjuntos.map(a => a.base64 || "");
 
             const res = await fetch('/api/confirm-and-save', {
                 method: 'POST',
@@ -236,6 +307,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify({
                     productos: productosSeleccionados,
                     archivos_nombres: nombresArchivos,
+                    archivos_b64: base64Archivos,
                     sku: skus,
                     product_name: detalleProductos,
                     notes: approvalNotes.value.trim() || 'Aprobado',

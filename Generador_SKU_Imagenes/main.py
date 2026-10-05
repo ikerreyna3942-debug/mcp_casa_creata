@@ -26,6 +26,7 @@ generador_ciego = AgenteGeneradorCiego()
 class ConfirmRequest(BaseModel):
     productos: Optional[List[Dict[str, Any]]] = []
     archivos_nombres: Optional[List[str]] = []
+    archivos_b64: Optional[List[str]] = []
     sku: Optional[str] = "N/A"
     product_name: Optional[str] = "Varios"
     description: Optional[str] = ""
@@ -96,10 +97,26 @@ async def get_productos():
 @app.post("/api/confirm-and-save")
 async def confirm_and_save_endpoint(req: ConfirmRequest):
     import traceback
+    import base64
     from fastapi.responses import JSONResponse
     try:
         # Paso 1: Orquestación
-        lista_arch = [{"nombre": n, "is_image": True, "bytes": None} for n in (req.archivos_nombres or [])]
+        lista_arch = []
+        arch_nombres = req.archivos_nombres or []
+        arch_b64 = req.archivos_b64 or []
+        
+        for i, nombre in enumerate(arch_nombres):
+            b_data = None
+            if i < len(arch_b64) and arch_b64[i]:
+                raw_b64 = arch_b64[i]
+                if "," in raw_b64:
+                    raw_b64 = raw_b64.split(",")[1]
+                try:
+                    b_data = base64.b64decode(raw_b64)
+                except:
+                    pass
+            lista_arch.append({"nombre": nombre, "is_image": True, "bytes": b_data})
+            
         resultado_orquestacion = orquestador_jefe.orquestar_flujo(
             lista_productos=req.productos or [],
             lista_archivos=lista_arch,

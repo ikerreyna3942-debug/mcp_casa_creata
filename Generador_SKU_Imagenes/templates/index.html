@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -19,12 +19,21 @@
                 </div>
                 <div class="panel-body">
                     <div class="search-container">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar producto..." autocomplete="off">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar catálogo..." autocomplete="off">
                         <div id="searchResults" class="search-dropdown" style="display: none;"></div>
                     </div>
 
-                    <div class="selected-section">
-                        <span class="section-label">Seleccionados (<span id="selectedCount">0</span>)</span>
+                    <!-- Nueva zona drag and drop para muebles -->
+                    <div id="dropZoneMuebles" class="drop-zone" style="margin-top: 15px; padding: 15px;" onclick="document.getElementById('multiMuebleInput').click()">
+                        <input type="file" id="multiMuebleInput" multiple accept="image/*" style="display: none;">
+                        <div class="empty-state" style="margin: 0; padding: 10px;">
+                            <div class="upload-icon" style="font-size: 24px; margin-bottom: 5px;">🛋️</div>
+                            <span class="upload-label" style="font-size: 13px;">o arrastra fotos de muebles nuevos aquí</span>
+                        </div>
+                    </div>
+
+                    <div class="selected-section" style="margin-top: 20px;">
+                        <span class="section-label">Muebles a Colocar (<span id="selectedCount">0</span>)</span>
                         <div id="selectedList" class="selected-list">
                             <p class="empty-tip">Sin productos seleccionados</p>
                         </div>
