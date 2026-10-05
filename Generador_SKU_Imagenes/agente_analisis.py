@@ -87,7 +87,17 @@ class AgenteAnalisisProducto:
         datos = self.preparar_datos_producto(datos_producto, cantidad)
         
         # Generar imagen aislada (sin bytes en este test, devolvera el mock PNG alpha)
-        reference_image_b64 = self.aislar_imagen_referencia(datos["foto_referencia_url"])
+        foto_b64 = datos_producto.get("foto_b64", "")
+        img_bytes = None
+        if foto_b64:
+            if "," in foto_b64:
+                foto_b64 = foto_b64.split(",")[1]
+            try:
+                img_bytes = base64.b64decode(foto_b64)
+            except Exception as e:
+                print(f"[AGENTE 2 ERROR] Error decodificando foto_b64: {e}")
+                
+        reference_image_b64 = self.aislar_imagen_referencia(datos["foto_referencia_url"], image_bytes=img_bytes)
         
         return {
             "status": "PRODUCT_ISOLATED_AND_ANALYZED",

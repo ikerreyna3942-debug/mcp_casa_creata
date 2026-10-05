@@ -31,79 +31,80 @@
         <!-- Grid Principal -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Panel 1: Elegir Productos -->
+            <!-- Panel 1: Elegir Productos (Muebles) -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
                 <div class="flex items-center gap-2 mb-4">
                     <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
-                    <h2 class="text-xl font-semibold">Elegir Productos</h2>
+                    <h2 class="text-xl font-semibold">Muebles a Colocar</h2>
                 </div>
-                <p class="text-sm text-gray-500 mb-4">Ingresa el SKU o nombre del producto para agregarlo a la lista.</p>
+                <p class="text-sm text-gray-500 mb-4">Arrastra las fotos de los muebles e indica la cantidad.</p>
                 
-                <form @submit.prevent="addProduct" class="flex gap-2 mb-4">
-                    <input 
-                        type="text" 
-                        x-model="newProduct" 
-                        placeholder="Ej. SKU-1024 o 'Silla Eames'" 
-                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    >
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                        Agregar
-                    </button>
-                </form>
+                <div 
+                    class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center text-center transition-colors cursor-pointer mb-4"
+                    :class="{ 'drag-active': isDraggingProd }"
+                    @dragover.prevent="isDraggingProd = true"
+                    @dragleave.prevent="isDraggingProd = false"
+                    @drop.prevent="handleDropProd($event)"
+                    @click="$refs.prodInput.click()"
+                >
+                    <p class="text-gray-600 font-medium">Arrastra fotos del mueble aquí</p>
+                    <input type="file" x-ref="prodInput" @change="handleProdSelect" multiple accept="image/*" class="hidden">
+                </div>
 
                 <div class="flex-1 overflow-y-auto">
-                    <ul class="space-y-2">
+                    <ul class="space-y-3">
                         <template x-for="(prod, index) in products" :key="index">
-                            <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                <span class="font-medium text-gray-700" x-text="prod"></span>
+                            <li class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                <img :src="prod.url" class="w-12 h-12 object-cover rounded shadow-sm border border-gray-300">
+                                <div class="flex-1 flex flex-col gap-1">
+                                    <input type="text" x-model="prod.name" placeholder="Nombre/SKU (Opcional)" class="text-sm border border-gray-300 rounded px-2 py-1 w-full">
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-xs text-gray-500 font-semibold">Cant:</label>
+                                        <input type="number" x-model.number="prod.quantity" min="1" class="text-sm border border-gray-300 rounded px-2 py-1 w-16 text-center">
+                                    </div>
+                                </div>
                                 <button @click="removeProduct(index)" class="text-red-500 hover:text-red-700 p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                                 </button>
                             </li>
                         </template>
                         <li x-show="products.length === 0" class="text-center text-gray-400 py-4 text-sm italic">
-                            No hay productos seleccionados.
+                            No has subido fotos de muebles.
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Panel 2: Subir Fotos -->
+            <!-- Panel 2: Subir Fotos (Entorno) -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
                 <div class="flex items-center gap-2 mb-4">
                     <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
-                    <h2 class="text-xl font-semibold">Subir Fotos</h2>
+                    <h2 class="text-xl font-semibold">Foto del Entorno</h2>
                 </div>
-                <p class="text-sm text-gray-500 mb-4">Adjunta imágenes de referencia para el pedido.</p>
+                <p class="text-sm text-gray-500 mb-4">Adjunta la imagen de la habitación o escenario vacío.</p>
 
                 <div 
                     class="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center text-center transition-colors cursor-pointer flex-1"
-                    :class="{ 'drag-active': isDragging }"
-                    @dragover.prevent="isDragging = true"
-                    @dragleave.prevent="isDragging = false"
-                    @drop.prevent="handleDrop($event)"
-                    @click="$refs.fileInput.click()"
+                    :class="{ 'drag-active': isDraggingBg }"
+                    @dragover.prevent="isDraggingBg = true"
+                    @dragleave.prevent="isDraggingBg = false"
+                    @drop.prevent="handleDropBg($event)"
+                    @click="$refs.bgInput.click()"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <p class="text-gray-600 font-medium">Arrastra tus fotos aquí</p>
+                    <p class="text-gray-600 font-medium">Arrastra el escenario aquí</p>
                     <p class="text-gray-400 text-sm mt-1">o haz clic para explorar</p>
-                    <input type="file" x-ref="fileInput" @change="handleFileSelect" multiple accept="image/*" class="hidden">
+                    <input type="file" x-ref="bgInput" @change="handleBgSelect" accept="image/*" class="hidden">
                 </div>
 
-                <!-- Preview de fotos miniatura -->
                 <div class="mt-4 flex gap-2 overflow-x-auto pb-2" x-show="photos.length > 0">
                     <template x-for="(photo, index) in photos" :key="index">
                         <div class="relative flex-shrink-0">
                             <img :src="photo.url" class="w-16 h-16 object-cover rounded-lg border border-gray-200">
                             <button @click.stop="removePhoto(index)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                             </button>
                         </div>
                     </template>
@@ -118,25 +119,26 @@
                 </div>
                 
                 <div class="flex-1 space-y-6 overflow-y-auto">
-                    <!-- Resumen Productos -->
                     <div>
-                        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Productos (<span x-text="products.length"></span>)</h3>
-                        <ul class="space-y-1">
+                        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Muebles (<span x-text="products.length"></span>)</h3>
+                        <ul class="space-y-2">
                             <template x-for="prod in products">
-                                <li class="text-gray-100 flex items-center gap-2">
-                                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-                                    <span x-text="prod"></span>
+                                <li class="text-gray-100 flex items-center gap-3">
+                                    <img :src="prod.url" class="w-8 h-8 object-cover rounded border border-gray-600">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-medium" x-text="prod.name || 'Sin nombre'"></span>
+                                        <span class="text-xs text-blue-300"><span x-text="prod.quantity"></span> piezas</span>
+                                    </div>
                                 </li>
                             </template>
-                            <li x-show="products.length === 0" class="text-gray-500 text-sm italic">Sin productos.</li>
+                            <li x-show="products.length === 0" class="text-gray-500 text-sm italic">Sin muebles.</li>
                         </ul>
                     </div>
 
                     <hr class="border-gray-700">
 
-                    <!-- Resumen Fotos -->
                     <div>
-                        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Archivos Adjuntos (<span x-text="photos.length"></span>)</h3>
+                        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Entorno (<span x-text="photos.length"></span>)</h3>
                         <div class="grid grid-cols-3 gap-2" x-show="photos.length > 0">
                             <template x-for="photo in photos">
                                 <div class="aspect-square rounded-md overflow-hidden border border-gray-700">
@@ -144,13 +146,13 @@
                                 </div>
                             </template>
                         </div>
-                        <p x-show="photos.length === 0" class="text-gray-500 text-sm italic">Sin imágenes.</p>
+                        <p x-show="photos.length === 0" class="text-gray-500 text-sm italic">Falta foto del entorno.</p>
                     </div>
                 </div>
 
-                <!-- Botón de Acción -->
                 <div class="mt-6 pt-6 border-t border-gray-700">
                     <button 
+                        @click="enviarDatos()"
                         class="w-full py-3 rounded-lg font-medium transition-colors flex justify-center items-center gap-2"
                         :class="isValid() ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer' : 'bg-gray-700 text-gray-400 cursor-not-allowed'"
                         :disabled="!isValid()"
@@ -158,7 +160,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                         </svg>
-                        <span x-text="isValid() ? 'Confirmar y Enviar' : 'Completa los pasos'"></span>
+                        <span x-text="isValid() ? 'Confirmar y Generar' : 'Completa los pasos'"></span>
                     </button>
                 </div>
             </div>
@@ -170,34 +172,51 @@
     <script>
         function appData() {
             return {
-                newProduct: '',
-                products: [],
-                photos: [],
-                isDragging: false,
+                products: [], // Array de { file, url, name, quantity }
+                photos: [], // Array de { file, url } (Fotos de entorno)
+                isDraggingProd: false,
+                isDraggingBg: false,
 
-                addProduct() {
-                    if (this.newProduct.trim() !== '') {
-                        this.products.push(this.newProduct.trim());
-                        this.newProduct = '';
+                // Manejo de Muebles (Panel 1)
+                handleDropProd(event) {
+                    this.isDraggingProd = false;
+                    const files = event.dataTransfer.files;
+                    this.processProdFiles(files);
+                },
+                handleProdSelect(event) {
+                    const files = event.target.files;
+                    this.processProdFiles(files);
+                },
+                processProdFiles(files) {
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        if (file.type.startsWith('image/')) {
+                            const url = URL.createObjectURL(file);
+                            this.products.push({ 
+                                file: file, 
+                                url: url, 
+                                name: file.name.split('.')[0], 
+                                quantity: 1 
+                            });
+                        }
                     }
                 },
-
                 removeProduct(index) {
+                    URL.revokeObjectURL(this.products[index].url);
                     this.products.splice(index, 1);
                 },
 
-                handleDrop(event) {
-                    this.isDragging = false;
+                // Manejo de Entorno (Panel 2)
+                handleDropBg(event) {
+                    this.isDraggingBg = false;
                     const files = event.dataTransfer.files;
-                    this.processFiles(files);
+                    this.processBgFiles(files);
                 },
-
-                handleFileSelect(event) {
+                handleBgSelect(event) {
                     const files = event.target.files;
-                    this.processFiles(files);
+                    this.processBgFiles(files);
                 },
-
-                processFiles(files) {
+                processBgFiles(files) {
                     for (let i = 0; i < files.length; i++) {
                         const file = files[i];
                         if (file.type.startsWith('image/')) {
@@ -206,15 +225,19 @@
                         }
                     }
                 },
-
                 removePhoto(index) {
                     URL.revokeObjectURL(this.photos[index].url);
                     this.photos.splice(index, 1);
                 },
 
                 isValid() {
-                    // Criterio básico: Al menos 1 producto y 1 foto
                     return this.products.length > 0 && this.photos.length > 0;
+                },
+
+                enviarDatos() {
+                    if (!this.isValid()) return;
+                    alert(`¡Listo para enviar!\nHas subido ${this.products.length} muebles distintos.\nSe generarán teniendo en cuenta sus cantidades.`);
+                    // Aquí iría el fetch('/api/confirm-and-save') enviando los archivos
                 }
             }
         }
