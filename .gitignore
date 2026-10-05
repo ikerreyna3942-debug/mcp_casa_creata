@@ -1,0 +1,9 @@
+credentials.json
+token_drive.json
+sheets_config.json
+antigravity-integracion-*.json
+.env
+__pycache__/
+venv/
+.venv/
+.agents/

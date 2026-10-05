@@ -14,7 +14,7 @@ from agente_generador import AgenteGeneradorCiego
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(dotenv_path=BASE_DIR / ".env")
 
-CREDENTIALS_PATH = BASE_DIR / "credentials.json"
+CREDENTIALS_PATH = Path(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", BASE_DIR / "credentials.json"))
 SPREADSHEET_ID = "1YsqnJNaOYNGVbpLOUQ0_BQzPtLK-JPjPiz3ObP4EtM4"
 
 app = FastAPI(title="Generador SKU Imagenes - Casa Creata")
